@@ -1,4 +1,4 @@
 # zlTube
 zlTube is a GUI based YouTube Downloader with multi-language support
 
-![alt text](http://url/to/img.png)
+![gui]([https://raw.githubusercontent.com/zlElo/zlTube/main/zlTube%20GUI.png])
