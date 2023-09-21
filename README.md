@@ -7,6 +7,7 @@ zlTube is a GUI based YouTube Downloader with multi-language support
 ## Languages:
 - German
 - English
+- Spanish (thanks to @darkgloves (Discord))
 
 ## Features:
 - Download YouTube Videos as .mp4
@@ -14,3 +15,4 @@ zlTube is a GUI based YouTube Downloader with multi-language support
 - Multi language Support
 - HD Download
 - Lightweight
+- Progressbar with Downloadspeed
