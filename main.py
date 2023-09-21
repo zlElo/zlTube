@@ -4,9 +4,9 @@ import threading
 from tkinter import filedialog
 import os
 from settings import settings_window
-import json
 import pyuac
-
+from lang import set_lang
+import customtkinter as tk
 
 def video_meta_datas():
     download_path = filedialog.askdirectory()
@@ -130,34 +130,15 @@ window.iconbitmap("icon.ico")
 
 
 
-# get language package on start
-with open('settings.json', 'r') as f:
-    data = json.load(f) # load the JSON data from the file
-    language = data['language']
+language_ = set_lang()
+length = language_[0]
+title = language_[1]
+seconds = language_[2]
+downloading = language_[3]
+saved = language_[4]
+download = language_[5]
+progress = language_[6]
 
-# if german language is selected
-if language == 'Deutsch':
-    with open('languages/de.json', 'r') as f_de:
-        data_de = json.load(f_de) # load the JSON data from the file
-        length = data_de['length']
-        title = data_de['title']
-        seconds = data_de['seconds']
-        downloading = data_de['downloading']
-        saved = data_de['saved']
-        download = data_de['download']
-        progress = data_de['progress']
-
-# if german language is selected
-if language == 'English':
-    with open('languages/en.json', 'r') as f_en:
-        data_en = json.load(f_en) # load the JSON data from the file
-        length = data_en['length']
-        title = data_en['title']
-        seconds = data_en['seconds']
-        downloading = data_en['downloading']
-        saved = data_en['saved']
-        download = data_en['download']
-        progress = data_en['progress']
 
 if pyuac.isUserAdmin():
     settings_window()
