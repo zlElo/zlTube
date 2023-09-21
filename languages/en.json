@@ -5,5 +5,7 @@
     "downloading": "Downloading...",
     "saved": "Saved!",
     "download": "Download",
-    "progress": "Progress:"
+    "progress": "Progress:",
+    "minutes": "minutes",
+    "hours": "hours"
 }

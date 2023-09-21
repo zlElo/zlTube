@@ -5,5 +5,7 @@
     "downloading": "Herunterladen...",
     "saved": "Gespeichert!",
     "download": "Herunterladen",
-    "progress": "Fortschritt:"
+    "progress": "Fortschritt:",
+    "minutes": "Minuten",
+    "hours": "Stunden"
 }

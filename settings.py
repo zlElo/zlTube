@@ -29,7 +29,7 @@ def settings_window():
 
 
     # This is the section of code which creates a combo box
-    language_combo= customtkinter.CTkComboBox(root, values=['English', 'Deutsch', 'Français'])
+    language_combo= customtkinter.CTkComboBox(root, values=['English', 'Deutsch', 'Espanol'])
     language_combo.pack()
 
 
@@ -41,3 +41,4 @@ def settings_window():
 
 
     root.mainloop()
+    

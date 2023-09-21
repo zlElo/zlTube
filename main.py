@@ -6,7 +6,56 @@ import os
 from settings import settings_window
 import pyuac
 from lang import set_lang
-import customtkinter as tk
+import time
+from time import sleep
+
+
+def progress_bar(final_size, download_path, file):
+    print('[log] progressbar called')
+    start = time.time()
+    sleep(1)
+    while True:
+        path = f'{download_path}/{file.default_filename}'
+        size_ = os.path.getsize(path)
+        actual_size = round(size_ / (1024 * 1024), 1)
+        done = int(50*actual_size/final_size)
+        bar.set(done/50)
+        end = time.time()
+        speed = round(actual_size / (end - start), 2)
+        label_progress_size.configure(text=f'{round(actual_size, 1)}/{round(final_size, 1)} MB  |   {speed} mb/s')
+
+        if actual_size == final_size:
+            print('[log] progress done!')
+            bar.set(final_size)
+            label_progress_size.configure(text=f'{round(actual_size, 1)}/{round(final_size, 1)} MB  |   0 mb/s')
+            break
+
+
+def progress_bar_mp3(final_size, download_path, file):
+    print('[log] progressbar called')
+    start = time.time()
+    sleep(0.4)
+    while True:
+        base, ext = os.path.splitext(f'{download_path}/{file.default_filename}')
+        path = f'{base}.mp4'
+        try:
+            size_ = os.path.getsize(path)
+        except:
+            path = f'{base}.mp3'
+            size_ = os.path.getsize(path)
+        actual_size = round(size_ / (1024 * 1024), 1)
+        done = int(50*actual_size/final_size)
+        bar.set(done/50)
+        end = time.time()
+        speed = round(actual_size / (end - start), 2)
+        label_progress_size.configure(text=f'{round(actual_size, 1)}/{round(final_size, 1)} MB  |   {speed} mb/s')
+
+        if actual_size == final_size:
+            print('[log] progress done!')
+            bar.set(final_size)
+            label_progress_size.configure(text=f'{round(actual_size, 1)}/{round(final_size, 1)} MB  |   0 mb/s')
+            break
+
 
 def video_meta_datas():
     download_path = filedialog.askdirectory()
@@ -20,6 +69,7 @@ def video_meta_datas():
     # Get the video details
     title_yt = yt.title
     length_yt = yt.length
+    
 
     if len(title_yt) > 25:
         title_yt = f'{title_yt[:25]}...'
@@ -31,7 +81,14 @@ def video_meta_datas():
     title_value = f'"{title_yt}"'
     value_title.configure(text=title_value)
 
-    length_value = f'{length_yt} {seconds}'
+    length_value = f'{length_yt} seconds'
+    seconds_ = int(length_yt)
+    minutes_ = seconds_ // 60
+    hours_ = minutes_ // 60
+    minutes_ %= 60
+    seconds_ %= 60
+
+    length_value = f'{hours_} {hours} {minutes_} {minutes} {seconds_} {seconds}'
     value_length.configure(text=length_value)
 
     # refresh window
@@ -61,6 +118,17 @@ def download_as_mp4(yt, download_path):
 
     # Download the video
     stream = yt.streams.filter(progressive=True, file_extension='mp4').order_by('resolution').desc().first()
+    file_size = stream.filesize_approx
+
+    # Print the file size in megabytes
+    print(f"File size: {file_size / (1024 * 1024):.2f} MB")
+
+    final_size = round(file_size / (1024 * 1024), 1)
+
+
+    progress_thread = threading.Thread(target=lambda: progress_bar(final_size, download_path, stream))
+    progress_thread.start()
+
     stream.download(download_path)
 
     # done title
@@ -87,6 +155,17 @@ def download_as_mp3(yt, download_path):
 
     # Wählen Sie den ersten Audio-Stream
     audio = audio_streams.first()
+
+    file_size = audio.filesize_approx
+
+    # Print the file size in megabytes
+    print(f"File size: {file_size / (1024 * 1024):.2f} MB")
+
+    final_size = round(file_size / (1024 * 1024), 1)
+
+    progress_thread = threading.Thread(target=lambda: progress_bar_mp3(final_size, download_path, audio))
+    progress_thread.start()
+
 
     # Herunterladen des Audio-Streams
     audio.download(download_path)
@@ -118,14 +197,12 @@ def admin_prompt():
         
         
 
-
-
-# Create a Tkinter window
+# main GUI
 window = customtkinter.CTk()
 window.title("zlTube")
-window.geometry('300x400')
-window.minsize(300, 400)
-window.maxsize(300, 400)
+window.geometry('300x450')
+window.minsize(300, 450)
+window.maxsize(300, 450)
 window.iconbitmap("icon.ico")
 
 
@@ -138,6 +215,8 @@ downloading = language_[3]
 saved = language_[4]
 download = language_[5]
 progress = language_[6]
+minutes = language_[7]
+hours = language_[8]
 
 
 if pyuac.isUserAdmin():
@@ -186,6 +265,13 @@ label_done_.pack(padx=80, pady=3)
 label_done = customtkinter.CTkLabel(backround_frame, text='', text_color='green')
 label_done.pack()
 
+
+# progressbar
+bar = customtkinter.CTkProgressBar(backround_frame)
+bar.pack()
+
+label_progress_size = customtkinter.CTkLabel(backround_frame, text='', text_color='yellow')
+label_progress_size.pack()
 
 
 # Display the window
